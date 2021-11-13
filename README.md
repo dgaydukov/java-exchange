@@ -1,4 +1,6 @@
-exchange componets (base of https://www.youtube.com/watch?v=b1e4t2k2KJY):
+# Building exchange in java
+
+exchange componets (based of https://www.youtube.com/watch?v=b1e4t2k2KJY):
 * primary me with orderbook per instrument (add/cancel/replace) - cancel - 40%
 * message bus (in-memory but can be used aeron) - use multicast so once event happen (like exectuion) all component can receive it at the same time and return to clients
     * drop copy (of some specific clients)

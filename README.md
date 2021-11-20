@@ -13,7 +13,7 @@ exchange components (based of https://www.youtube.com/watch?v=b1e4t2k2KJY):
 * state-machine recovery is a replay
 * speed, latency, throughput, determenism - basic principle of exchange
 
---
+### aeron (use it for as internal communication bus)
 aeron + busy loop is faster then unix select (https://en.wikipedia.org/wiki/Select_(Unix))
 if message size greater than MTU (1500byte) we need FragmentAssembler
 aeron use `/dev/shm` => any file created there treated as simple file yet stored in-memory
@@ -21,3 +21,13 @@ since udp doens't gurantee order & delivery we aeron use position to ensure orde
 conductor on receiver side will check all position and if missing will send back NAK (negative acknolegement) and ask sender to re-send again
 tcp philosophy - better late then never, low-latency philosophy - better never then late (so it's better not to send order at all, rather then send order with outdated price)
 publisher write into log.buffer
+
+### derivative exchange
+This exchange will include following items:
+* dated futures
+* perpetual futures aka perpetual swap
+* options
+* auctions
+* swaps (interest rate swap, like swap between fixed & floating income for defi or on perpetual 8 hour payment)
+* move options
+* spreads

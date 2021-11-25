@@ -1,5 +1,7 @@
 # Building exchange in java
 
+
+### matching engine architecture
 exchange components (based of https://www.youtube.com/watch?v=b1e4t2k2KJY):
 * primary me with orderbook per instrument (add/cancel/replace) - cancel - 40%
 * message bus (in-memory but can be used aeron) - use multicast so once event happen (like exectuion) all component can receive it at the same time and return to clients
@@ -31,3 +33,20 @@ This exchange will include following items:
 * swaps (interest rate swap, like swap between fixed & floating income for defi or on perpetual 8 hour payment)
 * move options
 * spreads
+
+### exchange components
+exchange should include 3 components:
+* matching engine (2 instances should be running, see [architecture](#matching-engine-architecture))
+* communication channel or bus - aeron should be used
+* external api - how clients can communicate with the system. Most top exchanges uses 3 level of communication
+    * http-api
+    * ws-api
+    * fix-api
+
+### fix-api logon
+There are 3 ways to do logon with fix
+* [deribit](https://docs.deribit.com/#logon-a) - here we just take hash256 from secret key
+* [etorox](https://etorox.com/etorox-fix-api/#FIX-Session-Level-Messages) - here we are using hmac to sign randomly generated payload
+* [cme](https://www.cmegroup.com/confluence/display/EPICSANDBOX/Session+Layer+-+Logon#SessionLayerLogon-Step2-CreateSignatureusingSecretKeyandCanonicalFIXMessage) - here we use hmac to sign whole body
+as you see there is no standard across the ecosystem, different exchanges uses different approach. The most consistent in my opinion is cme case, where you have body and sign it.
+also best practice is to have key rotation logic, but it should be handled by different component, where basically you urge your clients to rotate keys every year, and if clients is not dot doing this, you disable such keys.

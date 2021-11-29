@@ -45,10 +45,13 @@ exchange should include 3 components:
 
 ### fix-api
 Logon details
-There are 3 ways to do logon with fix
+There are several ways to logon with fix:
 * [deribit](https://docs.deribit.com/#logon-a) - here we just take hash256 from secret key
+* [coinbase](https://docs.cloud.coinbase.com/exchange/docs/messages#logon-a) - here we take hmac of several fields like SendingTime/MsgType/MsgSeqNum/SenderCompID/TargetCompID/Password
+here we have interesting concept of api key = key+secret+passphrase. And third param provided by end-user and stored hashed in server. So to access api/fix all 3 need to be used.
+This ensure if credentials got leaked from exchange, attacker still not be able to login/sendRequests cause he doesn't know passphrase, which only user knows.
 * [etorox](https://etorox.com/etorox-fix-api/#FIX-Session-Level-Messages) - here we are using hmac to sign randomly generated payload
 * [cme](https://www.cmegroup.com/confluence/display/EPICSANDBOX/Session+Layer+-+Logon#SessionLayerLogon-Step2-CreateSignatureusingSecretKeyandCanonicalFIXMessage) - here we use hmac to sign whole body
 
 As you see there is no standard across the ecosystem, different exchanges uses different approach. The most consistent in my opinion is cme case, where you have body and sign it.
-also best practice is to have key rotation logic, but it should be handled by different component, where basically you urge your clients to rotate keys every year, and if clients is not dot doing this, you disable such keys.
+Also best practice is to have key rotation logic, but it should be handled by different component, where basically you urge your clients to rotate keys every year, and if clients is not dot doing this, you disable such keys after expiration date.
